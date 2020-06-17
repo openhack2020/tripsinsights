@@ -1,0 +1,13 @@
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+
+
+# In this example, @octocat owns any file in an apps directory
+# anywhere in your repository.
+/apis/poi/ @chbasani @tibor19
+/apis/trips/ @kostinams @tibor19
+/apis/user-java/ @faxg @tibor19
+/apis/userprofile/ @nepal2030 @tibor19
+
+
