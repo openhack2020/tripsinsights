@@ -1,0 +1,23 @@
+name: User-Java API CI
+
+on:
+  push:
+    branches: [ master ]
+    paths: 
+    - /apis/user-java/**
+  pull_request:
+    branches: [ master ]
+    paths:
+    - /apis/user-java/**
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image for 'userjava'
+      run: docker build . --file Dockerfile --tag userjava:$(date +%s)
+      working-directory: /apis/user-java
