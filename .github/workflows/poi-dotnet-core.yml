@@ -47,7 +47,8 @@ jobs:
         registry: docker.pkg.github.com
         repository: openhack2020/tripsinsights/poi
         path: apis/poi/web
-        tag_with_ref: true
+        tag_with_sha: true
+        #tag_with_ref: true
   
       env:
        SQL_USER: ${{ secrets.SQL_USER }}
