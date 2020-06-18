@@ -46,7 +46,7 @@ jobs:
           image_name: openhack2020/tripsinsights/poi:$(date +%s)
           registry_password: ${{ secrets.GITHUB_TOKEN }}
       
-          working-directory: /apis/poi/web
+          working-directory: apis/poi/web
       env:
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
