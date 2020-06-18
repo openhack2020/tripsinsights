@@ -39,20 +39,20 @@ jobs:
       
     - name: Build Docker image
               
-      uses: flownative/action-docker-build@v1
-        
-      with:
-          tag_ref: ${{ github.ref }}
-          image_name: openhack2020/tripsinsights/poi:$(date +%s)
-          registry_password: ${{ secrets.GITHUB_TOKEN }}
-      
-          working-directory: apis/poi/web
       env:
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
         SQL_SERVER: openhackejs89fy7sql.database.windows.net
         SQL_DBNAME: mydrivingDB
        
+      working-directory: apis/poi/web
+      
+      run: |
+        docker login docker.pkg.github.com -u kostinams -p ${{ secrets.GITHUB_TOKEN }}
+        docker build .
+        docker tag test docker.pkg.github.com/openhack2020/tripsinsights/poi:1
+        docker push docker.pkg.github.com/openhack2020/tripsinsights/poi:1
+      
     - name: error 
       if: ${{ failure() }}
       uses: JasonEtco/create-an-issue@v2
