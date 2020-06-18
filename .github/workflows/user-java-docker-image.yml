@@ -35,6 +35,6 @@ jobs:
       
       run: |
         docker login docker.pkg.github.com -u faxg -p ${{ secrets.GITHUB_TOKEN }}
-        docker docker build . --file Dockerfile --tag userjava:1
+        docker docker build . --tag userjava:1
         docker tag 1 docker.pkg.github.com/openhack2020/tripsinsights/userjava:1
         docker push docker.pkg.github.com/openhack2020/tripsinsights/userjava:1
