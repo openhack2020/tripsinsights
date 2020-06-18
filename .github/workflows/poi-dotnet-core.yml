@@ -42,6 +42,7 @@ jobs:
       uses: docker/build-push-action@v1  
       
       with:
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
         repository: openhack2020/tripsinsights/poi
