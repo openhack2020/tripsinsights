@@ -36,6 +36,17 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
       working-directory: /apis/poi
       
+    - name: Build Docker image
+              
+      uses: flownative/action-docker-build@v1
+      
+      with:
+          tag_ref: ${{ github.ref }}
+          image_name: openhack2020/tripsinsights/poi:$(date +%s)
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+      
+          working-directory: /apis/poi/web
+      
     - name: error 
       if: ${{ failure() }}
       uses: JasonEtco/create-an-issue@v2
