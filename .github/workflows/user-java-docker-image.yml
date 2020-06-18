@@ -20,6 +20,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image for 'userjava'
-      run: docker build . --file Dockerfile --tag userjava:$(date +%s)
+#    - name: Build the Docker image for 'userjava'
+#      run: docker build . --file Dockerfile --tag userjava:$(date +%s)
+#      working-directory: apis/user-java
+      
+    - name: Build Docker image        
+      env:
+        SQL_USER: ${{ secrets.SQL_USER }}
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        SQL_SERVER: openhackejs89fy7sql.database.windows.net
+        SQL_DBNAME: mydrivingDB
+       
       working-directory: apis/user-java
+      
+      run: |
+        docker login docker.pkg.github.com -u faxg -p ${{ secrets.GITHUB_TOKEN }}
+        docker docker build . --file Dockerfile --tag userjava:1
+        docker tag 1 docker.pkg.github.com/openhack2020/tripsinsights/userjava:1
+        docker push docker.pkg.github.com/openhack2020/tripsinsights/userjava:1
