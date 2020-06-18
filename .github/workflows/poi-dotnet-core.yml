@@ -1,3 +1,4 @@
+  
 name: CI POI
 
 on:
@@ -35,25 +36,26 @@ jobs:
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-      working-directory: apis/poi    	
+      working-directory: apis/poi     
      
     - name: Build Docker image
       uses: docker/build-push-action@v1  
-      env:
-    	SQL_USER: ${{ secrets.SQL_USER }}
-	SQL_SERVER: openhackejs89fy7sql.database.windows.net
-	SQL_DBNAME: mydrivingDB 	
- 	SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-	
+      
       with:
-      	password: ${{ secrets.GITHUB_TOKEN }}
-	registry: docker.pkg.github.com
-	repository: openhack2020/tripsinsights/poi
-	path: apis/poi/web
-	tag_with_ref: true 
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: openhack2020/tripsinsights/poi
+        path: apis/poi/web
+        tag_with_ref: true
+  
+      env:
+       SQL_USER: ${{ secrets.SQL_USER }}
+       SQL_SERVER: openhackejs89fy7sql.database.windows.net
+       SQL_DBNAME: mydrivingDB  
+       SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
  
-   - name: Error
-     uses: JasonEtco/create-an-issue@v2		
-     if: ${{ failure() }}
-     env:
-      	GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+    - name: Error
+      uses: JasonEtco/create-an-issue@v2   
+      if: ${{ failure() }}
+      env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
