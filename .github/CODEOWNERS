@@ -3,11 +3,10 @@
 
 
 
-# In this example, @octocat owns any file in an apps directory
-# anywhere in your repository.
-/apis/poi/ @chbasani @tibor19
-/apis/trips/ @kostinams @tibor19
-/apis/user-java/ @faxg @tibor19
-/apis/userprofile/ @nepal2030 @tibor19
+# For the API, we want to have an allow-list of users that can approve pull requests.
+/apis/poi/ @faxg @nepal2030 @kostinams @chbasani @tibor19
+/apis/trips/ @faxg @nepal2030 @kostinams @chbasani @tibor19
+/apis/user-java/ @faxg @nepal2030 @kostinams @chbasani @tibor19
+/apis/userprofile/ @faxg @nepal2030 @kostinams @chbasani @tibor19
 
 
