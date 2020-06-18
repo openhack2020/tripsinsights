@@ -17,6 +17,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.202
+
+    - name: Where's Waldo
+      run: which dotnet
+
+    - name: Show Version
+      run: dotnet --version
+
     - name: Install dependencies
       run: dotnet restore
       working-directory: api/poi
