@@ -49,10 +49,9 @@ jobs:
       
       run: |
         docker login docker.pkg.github.com -u kostinams -p ${{ secrets.GITHUB_TOKEN }}
-        docker build .
-        docker tag 1 docker.pkg.github.com/openhack2020/tripsinsights/poi:1
-        docker push docker.pkg.github.com/openhack2020/tripsinsights/poi:1
-      
+        docker build . --tag docker.pkg.github.com/openhack2020/tripsinsights/poi:$
+        docker push docker.pkg.github.com/openhack2020/tripsinsights/poi:$
+        
     - name: error 
       if: ${{ failure() }}
       uses: JasonEtco/create-an-issue@v2
