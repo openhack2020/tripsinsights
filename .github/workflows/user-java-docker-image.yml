@@ -1,4 +1,4 @@
-name: User-Java API CI
+name: CI User-Java 
 
 on:
   push:
