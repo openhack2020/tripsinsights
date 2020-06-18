@@ -35,40 +35,25 @@ jobs:
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-      working-directory: apis/poi
-      
-      
+      working-directory: apis/poi    	
+     
     - name: Build Docker image
-	    uses: docker/build-push-action@v1
-	  env:
-		  SQL_USER: ${{ secrets.SQL_USER }}
-		  SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-		  SQL_SERVER: openhacktibi123sql.database.windows.net
-		  SQL_DBNAME: mydrivingDB
-	  with:
-		  	username: ${{ github.actor }}
-			  password: ${{ secrets.GITHUB_TOKEN }}
-			  registry: docker.pkg.github.com
-			  repository: openhack2020/tripsinsights/poi
-			  path: apis/poi/web
-			  tag_with_ref: true
- #   - name: Build Docker image
-              
-  #    env:
-  #      SQL_USER: ${{ secrets.SQL_USER }}
- #       SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-    #    SQL_SERVER: openhackejs89fy7sql.database.windows.net
- #       SQL_DBNAME: mydrivingDB
-       
-  #    working-directory: apis/poi/web
-      
-#      run: |
- #       docker login docker.pkg.github.com -u kostinams -p ${{ secrets.GITHUB_TOKEN }}
-#        docker build . --tag docker.pkg.github.com/openhack2020/tripsinsights/poi:$
-#        docker push docker.pkg.github.com/openhack2020/tripsinsights/poi:$
-        
-    - name: error 
-      if: ${{ failure() }}
-      uses: JasonEtco/create-an-issue@v2
+      uses: docker/build-push-action@v1  
       env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    	SQL_USER: ${{ secrets.SQL_USER }}
+	SQL_SERVER: openhackejs89fy7sql.database.windows.net
+	SQL_DBNAME: mydrivingDB 	
+ 	SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+	
+      with:
+      	password: ${{ secrets.GITHUB_TOKEN }}
+	registry: docker.pkg.github.com
+	repository: openhack2020/tripsinsights/poi
+	path: apis/poi/web
+	tag_with_ref: true 
+ 
+   - name: Error
+     uses: JasonEtco/create-an-issue@v2		
+     if: ${{ failure() }}
+     env:
+      	GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
