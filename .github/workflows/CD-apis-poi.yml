@@ -1,0 +1,105 @@
+name: CD POI .NET Core
+
+on:
+  push:
+    branches: [ master ]
+    paths: [ apis/poi/**, .github/workflows/CD-apis-poi.yml ]
+
+jobs:
+  build-and-deploy:
+    env: 
+      API_NAME: poi
+      DOCKER_FILE_PATH: apis/poi/web
+      DEPLOYMENT_PREFIX: openhackejs89fy7
+
+      # for github packages use this
+
+      # DOCKER_REGISTRY_SERVER: docker.pkg.github.com
+      # DOCKER_REGISTRY_SERVER_USERNAME: ${{ github.actor }}
+      # DOCKER_REGISTRY_SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+      # for ACR use this
+      DOCKER_REGISTRY_SERVER: openhackejs89fy7acr.azurecr.io
+      DOCKER_REGISTRY_SERVER_USERNAME: ${{ secrets.DOCKER_REGISTRY_SERVER_USERNAME}}
+      DOCKER_REGISTRY_SERVER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_SERVER_PASSWORD }}
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apis/${{ env.API_NAME }}
+    steps:
+    - name: Checkout the source code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ env.DOCKER_REGISTRY_SERVER_USERNAME }}
+        password: ${{ env.DOCKER_REGISTRY_SERVER_PASSWORD }}
+        registry: ${{ env.DOCKER_REGISTRY_SERVER }}
+        repository: ${{ github.repository }}/${{ env.API_NAME }}
+        path: ${{ env.DOCKER_FILE_PATH }}
+        tags: ${{ github.sha }}
+      env:
+        SQL_USER: ${{ secrets.SQL_USER }}
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        SQL_SERVER: ${{ env.DEPLOYMENT_PREFIX }}sql.database.windows.net
+        SQL_DBNAME: mydrivingDB
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_DEPLOYMENT_CREDENTIALS }}
+
+    - name: Package repo authenticate
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.DOCKER_REGISTRY_SERVER }}
+        username: ${{ env.DOCKER_REGISTRY_SERVER_USERNAME }}
+        password: ${{ env.DOCKER_REGISTRY_SERVER_PASSWORD }}
+
+    - name: Set Web App GitHubPackage authentication
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: '${{ env.DEPLOYMENT_PREFIX }}${{ env.API_NAME }}'
+        app-settings-json: |
+          [
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                  "value": "${{ env.DOCKER_REGISTRY_SERVER_PASSWORD }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_URL",
+                  "value": "https://${{ env.DOCKER_REGISTRY_SERVER }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                  "value": "${{ env.DOCKER_REGISTRY_SERVER_USERNAME }}",
+                  "slotSetting": false
+              }
+          ]
+
+    - name: 'Deploy to Azure Web App for Container'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: '${{ env.DEPLOYMENT_PREFIX }}${{ env.API_NAME }}'
+        images: ${{ env.DOCKER_REGISTRY_SERVER }}/${{ github.repository }}/${{ env.API_NAME }}:${{ github.sha }}
+        slot-name: staging
+
+    - name: On error -> Create issue 
+      if: ${{ failure() }}
+      uses: actions/github-script@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          let body = "${{ env.build_name }} Worflow Failure \n Build Number: ${{ github.run_number }} \n Build Log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \n SHA: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) \n";
+          github.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: "${{ env.build_name }} Workflow ${{ github.run_number }} Failed! ",
+            body: body
+          });
+

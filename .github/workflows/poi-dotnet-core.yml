@@ -2,14 +2,11 @@
 name: CI POI
 
 on:
-  push:
-    branches: [ master ]
-    paths: 
-    - apis/poi/**
   pull_request:
     branches: [ master ]
     paths: 
     - apis/poi/**
+    - .github/workflows/poi-dotnet-core.yml
 
 jobs:
   build:
@@ -38,46 +35,46 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
       working-directory: apis/poi     
      
-    - name: Build Docker image
-      uses: docker/build-push-action@v1  
+    # - name: Build Docker image
+    #   uses: docker/build-push-action@v1  
       
-      with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: openhack2020/tripsinsights/poi
-        path: apis/poi/web
-        tag_with_sha: true
-        #tag_with_ref: true
+    #   with:
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
+    #     registry: docker.pkg.github.com
+    #     repository: openhack2020/tripsinsights/poi
+    #     path: apis/poi/web
+    #     tag_with_sha: true
+    #     #tag_with_ref: true
   
-      env:
-       SQL_USER: ${{ secrets.SQL_USER }}
-       SQL_SERVER: openhackejs89fy7sql.database.windows.net
-       SQL_DBNAME: mydrivingDB  
-       SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+    #   env:
+    #    SQL_USER: ${{ secrets.SQL_USER }}
+    #    SQL_SERVER: openhackejs89fy7sql.database.windows.net
+    #    SQL_DBNAME: mydrivingDB  
+    #    SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
       
-    - name: Azure Login
-      uses: Azure/login@v1.1
-      with:
-        creds: ${{ secrets.AZURE_DEPLOYMENT_CREDENTIALS }}
+    # - name: Azure Login
+    #   uses: Azure/login@v1.1
+    #   with:
+    #     creds: ${{ secrets.AZURE_DEPLOYMENT_CREDENTIALS }}
    
-    - name: Publish to Azure
-      uses: Azure/webapps-deploy@v2
-      with:
-        # Name of the Azure Web App
-        app-name: openhackejs89fy7poi
-        # Applies to Web App only: Publish profile (*.publishsettings) file contents with Web Deploy secrets
-        #publish-profile: 
-        # Enter an existing Slot other than the Production slot
-        slot-name: staging
-        # Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy
-        #package: # optional, default is .
-        # Applies to Web App Containers only: Specify the fully qualified container image(s) name. For example, 'myregistry.azurecr.io/nginx:latest' or 'python:3.7.2-alpine/'. For multi-container scenario multiple container image names can be provided (multi-line separated)
-        images: docker.pkg.github.com/openhack2020/tripsinsights/poi:sha-b3213d4
-        # Applies to Web App Containers only: Path of the Docker-Compose file. Should be a fully qualified path or relative to the default working directory. Required for multi-container scenario
-        #configuration-file: # optional
-        # Enter the start up command. For ex. dotnet run or dotnet run
-        #startup-command: # optional
+    # - name: Publish to Azure
+    #   uses: Azure/webapps-deploy@v2
+    #   with:
+    #     # Name of the Azure Web App
+    #     app-name: openhackejs89fy7poi
+    #     # Applies to Web App only: Publish profile (*.publishsettings) file contents with Web Deploy secrets
+    #     #publish-profile: 
+    #     # Enter an existing Slot other than the Production slot
+    #     slot-name: staging
+    #     # Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy
+    #     #package: # optional, default is .
+    #     # Applies to Web App Containers only: Specify the fully qualified container image(s) name. For example, 'myregistry.azurecr.io/nginx:latest' or 'python:3.7.2-alpine/'. For multi-container scenario multiple container image names can be provided (multi-line separated)
+    #     images: docker.pkg.github.com/openhack2020/tripsinsights/poi:sha-b3213d4
+    #     # Applies to Web App Containers only: Path of the Docker-Compose file. Should be a fully qualified path or relative to the default working directory. Required for multi-container scenario
+    #     #configuration-file: # optional
+    #     # Enter the start up command. For ex. dotnet run or dotnet run
+    #     #startup-command: # optional
  
     - name: Error
       uses: JasonEtco/create-an-issue@v2   
