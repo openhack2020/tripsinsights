@@ -32,7 +32,7 @@ jobs:
       working-directory: apis/poi
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
       working-directory: apis/poi     
      
     # - name: Build Docker image
