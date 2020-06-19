@@ -31,9 +31,16 @@ jobs:
         registry: docker.pkg.github.com
         repository: openhack2020/tripsinsights/userjava
         path: apis/user-java
-        tag_with_sha: true
+        # tag_with_sha: false
+        tags: ${{ GITHUB_SHA }} 
       env:
        SQL_USER: ${{ secrets.SQL_USER }}
        SQL_SERVER: openhackejs89fy7sql.database.windows.net
        SQL_DBNAME: mydrivingDB  
        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+    
+    - name: create issue on error
+      uses: JasonEtco/create-an-issue@v2   
+      if: ${{ failure() }}
+      env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
