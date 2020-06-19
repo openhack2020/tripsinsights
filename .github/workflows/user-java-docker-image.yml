@@ -32,7 +32,7 @@ jobs:
         repository: openhack2020/tripsinsights/userjava
         path: apis/user-java
         # tag_with_sha: false
-        tags: $GITHUB_SHA 
+        tags: ${{env.GITHUB_SHA}} 
       env:
        SQL_USER: ${{ secrets.SQL_USER }}
        SQL_SERVER: openhackejs89fy7sql.database.windows.net
