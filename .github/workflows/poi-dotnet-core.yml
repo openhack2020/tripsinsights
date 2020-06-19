@@ -55,7 +55,12 @@ jobs:
        SQL_SERVER: openhackejs89fy7sql.database.windows.net
        SQL_DBNAME: mydrivingDB  
        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-
+      
+    - name: Azure Login
+      uses: Azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_DEPLOYMENT_CREDENTIALS }}
+   
     - name: Publish to Azure
       uses: Azure/webapps-deploy@v2
       with:
